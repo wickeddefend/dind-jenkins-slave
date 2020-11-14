@@ -7,6 +7,7 @@
 #   http://jonathan.bergknoff.com/journal/building-good-docker-images
 
 FROM evarga/jenkins-slave
+FROM node:14.13-stretch
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -17,7 +18,7 @@ RUN apt-get update -qq && apt-get install -qqy \
     ca-certificates \
     curl \
     software-properties-common && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* \
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 RUN add-apt-repository \
@@ -30,7 +31,6 @@ RUN apt-get update -qq && apt-get install -qqy docker-ce=17.09.0~ce-0~ubuntu && 
 ADD wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker
 VOLUME /var/lib/docker
-
 
 # Make sure that the "jenkins" user from evarga's image is part of the "docker"
 # group. Needed to access the docker daemon's unix socket.
