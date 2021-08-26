@@ -6,8 +6,8 @@
 # Following the best practices outlined in:
 #   http://jonathan.bergknoff.com/journal/building-good-docker-images
 
-FROM evarga/jenkins-slave
-FROM node:14.13-stretch
+FROM jenkins/jnlp-slave
+USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -17,16 +17,18 @@ RUN apt-get update -qq && apt-get install -qqy \
     apt-transport-https \
     ca-certificates \
     curl \
-    software-properties-common && \
-    rm -rf /var/lib/apt/lists/* \
+    software-properties-common \
+    iptables-persistent \
+    gpg-agent && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 RUN add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+    "deb [arch=amd64] https://download.docker.com/linux/debian \
     $(lsb_release -cs) \
     stable"
 # Install Docker from Docker Inc. repositories.
-RUN apt-get update -qq && apt-get install -qqy docker-ce=17.09.0~ce-0~ubuntu && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && apt-get install -qqy docker-ce && rm -rf /var/lib/apt/lists/*
 
 ADD wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker

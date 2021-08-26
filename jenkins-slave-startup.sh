@@ -7,4 +7,5 @@ set -ex
 /usr/local/bin/wrapdocker &
 
 # start the ssh daemon
-/usr/sbin/sshd -D
+/usr/sbin/sshd -D &
+/usr/local/bin/jenkins-agent
