@@ -22,13 +22,16 @@ RUN apt-get update -qq && apt-get install -qqy \
     gpg-agent && \
     rm -rf /var/lib/apt/lists/*
 
+RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 RUN add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/debian \
     $(lsb_release -cs) \
     stable"
-# Install Docker from Docker Inc. repositories.
-RUN apt-get update -qq && apt-get install -qqy docker-ce && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update -qq && apt-get install -qqy docker-ce kubectl && rm -rf /var/lib/apt/lists/*
 
 ADD wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/wrapdocker
